@@ -1,21 +1,20 @@
 <script setup lang="ts">
 // Import các thành phần cần thiết
-import axios from 'axios';
+import { useAuthStore } from '@/store/auth'; // Đường dẫn có thể khác tùy theo cấu trúc dự án
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useTheme } from 'vuetify';
 
+
 // Import logo và các hình ảnh sử dụng cho giao diện đăng nhập
-import { saveTokenToSession, saveTokenToStorage } from '@/utils/storage';
 import logo from '@images/logo.svg?raw';
 import authV1MaskDark from '@images/pages/auth-v1-mask-dark.png';
 import authV1MaskLight from '@images/pages/auth-v1-mask-light.png';
 import authV1Tree2 from '@images/pages/auth-v1-tree-2.png';
 import authV1Tree from '@images/pages/auth-v1-tree.png';
-// Lấy URL từ biến môi trường
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const router = useRouter();
+const authStore = useAuthStore()
 
 // Tạo đối tượng form để lưu trữ dữ liệut email, mật khẩu và trạng thái 'nhớ tài khoản'
 const form = ref({
@@ -48,23 +47,10 @@ const handleLogin = async () => {
     if (!validateForm()) {
       return; // Ngừng nếu form không hợp lệ
     }
-    const response = await axios.post(`${API_BASE_URL}/api/login`, {
-      email: form.value.username,
-      password: form.value.password,
-    });
-
-    // Nhận token từ phản hồi API
-    const token = response.data.token;
-
-    // Lưu token vào localStorage hoặc sessionStorage
-    if (form.value.remember) {
-      saveTokenToStorage(token);
-    } else {
-      saveTokenToSession(token);
-    }
+    await authStore.login(form.value.username, form.value.password, form.value.remember)
 
     // Điều hướng đến trang dashboard sau khi đăng nhập thành công
-    router.push('/dashboard');
+    router.push('/notification');
   } catch (error) {
     console.error('Đăng nhập thất bại:', error);
     alert('Đăng nhập thất bại. Vui lòng kiểm tra thông tin đăng nhập.');
@@ -103,6 +89,8 @@ const validateForm = () => {
 
 <template>
   <!-- Giao diện chính của trang đăng nhập -->
+
+  <!-- <socket /> -->
 
   <div class="auth-wrapper d-flex align-center justify-center pa-4">
     <!-- Thẻ VCard chứa form đăng nhập -->

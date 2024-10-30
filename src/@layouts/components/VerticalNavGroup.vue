@@ -9,18 +9,9 @@ const isOpen = ref(false)
 </script>
 
 <template>
-  <li
-    class="nav-group"
-    :class="isOpen && 'open'"
-  >
-    <div
-      class="nav-group-label"
-      @click="isOpen = !isOpen"
-    >
-      <VIcon
-        :icon="item.icon || 'ri-checkbox-blank-circle-line'"
-        class="nav-item-icon"
-      />
+  <li class="nav-group" :class="isOpen && 'open'">
+    <div class="nav-group-label" @click="isOpen = !isOpen">
+      <VIcon :icon="item.icon || 'ri-checkbox-blank-circle-line'" class="nav-item-icon" />
       <span class="nav-item-title">{{ item.title }}</span>
       <!-- <span
         class="nav-item-badge"
@@ -28,10 +19,7 @@ const isOpen = ref(false)
       >
         {{ item.badgeContent }}
       </span> -->
-      <VIcon
-        icon="ri-arrow-right-s-line"
-        class="nav-group-arrow"
-      />
+      <VIcon icon="ri-arrow-right-s-line" class="nav-group-arrow" />
     </div>
     <div class="nav-group-children-wrapper">
       <ul class="nav-group-children">
