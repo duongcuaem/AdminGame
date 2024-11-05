@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAuthStore } from '@/store/auth'; // Đường dẫn có thể khác tùy theo cấu trúc dự án
+import { useAuthStore } from '@/stores/auth'; // Đường dẫn có thể khác tùy theo cấu trúc dự án
 import { useTheme } from 'vuetify';
 
 import logo from '@images/logo.svg?raw';

@@ -1,5 +1,7 @@
+// services/useWebSocket.ts
 import { IMessage, Stomp } from '@stomp/stompjs'
 import { ref } from 'vue'
+const API_BASE_URL = import.meta.env.VITE_API_SOCKET_URL
 
 // Định nghĩa giao diện Message
 interface Message {
@@ -15,43 +17,49 @@ export function useWebSocket() {
   const isConnected = ref(false)
   const subscriptions = new Map<string, any>()
 
-  // Hàm kết nối WebSocket với userId
-  const connectWebSocket = () => {
+  // Hàm kết nối WebSocket
+  const connectWebSocket = (token: string) => {
     if (stompClient.value || isConnected.value) return
 
     // Địa chỉ WebSocket endpoint
-    const socketUrl = 'http://localhost:8080/ws'
-    stompClient.value = Stomp.over(new WebSocket(socketUrl)) // Sử dụng factory
+    const socketUrl = `${API_BASE_URL}`
+    stompClient.value = Stomp.over(new WebSocket(socketUrl))
 
-    stompClient.value.debug = console.log // Bật debug
     stompClient.value.connect(
-      {},
+      { Authorization: `Bearer ${token}` },
       () => {
         console.log('Đã kết nối tới WebSocket Hub')
         isConnected.value = true
 
-        // Đăng ký vào kênh thông báo dành riêng cho người dùng
-        subscribeToChannel(`/topic/notifications`, message => {
+        // Đăng ký các kênh mặc định khi kết nối thành công
+        subscribeToChannel('/topic/notification', message => {
           console.log('Received notification:', message.body)
         })
 
-        // Đăng ký vào kênh tin nhắn cá nhân cho người dùng
-        subscribeToChannel(`/user/queue/messages`, message => {
-          console.log('Received personal message:', message.body)
+        subscribeToChannel('/topic/messages', message => {
+          console.log('Received message:', message.body)
+        })
+
+        subscribeToChannel('/user/queue/notifications', message => {
+          console.log('Received user notification:', message.body)
+        })
+
+        subscribeToChannel('/user/queue/messages', message => {
+          console.log('Received user message:', message.body)
         })
       },
       (error: any) => {
         console.error('Lỗi kết nối WebSocket:', error)
-        retryConnection() // Thử kết nối lại nếu thất bại
+        retryConnection(token) // Thử kết nối lại nếu thất bại
       },
     )
   }
 
   // Thử kết nối lại sau 5 giây nếu bị mất kết nối
-  const retryConnection = () => {
+  const retryConnection = (token: string) => {
     setTimeout(() => {
       console.log('Đang thử kết nối lại WebSocket...')
-      connectWebSocket()
+      connectWebSocket(token)
     }, 5000)
   }
 

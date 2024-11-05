@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 const wsUrl = 'ws://localhost:8080/ws'
@@ -57,4 +57,4 @@ onBeforeUnmount(() => {
       <li v-for="(message, index) in messages" :key="index">{{ message }}</li>
     </ul>
   </div>
-</template>
+</template> -->

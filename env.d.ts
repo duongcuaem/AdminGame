@@ -10,3 +10,12 @@ declare module 'vue-router' {
     public?: boolean
   }
 }
+
+interface ImportMetaEnv {
+  readonly VITE_API_BASE_URL: string
+  // Khai báo thêm các biến môi trường khác ở đây nếu có
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}

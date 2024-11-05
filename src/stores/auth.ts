@@ -1,5 +1,4 @@
 import { login, register } from '@/api/auth'
-import { useWebSocket } from '@/composables/useWebSocket'
 import { clearToken, getToken, saveTokenToSession, saveTokenToStorage } from '@/utils/storage'
 import { defineStore } from 'pinia'
 
@@ -25,9 +24,6 @@ export const useAuthStore = defineStore('auth', {
           }
           // Đánh dấu là đã xác thực
           this.isAuthenticated = true
-
-          // Kết nối WebSocket sau khi đăng nhập thành công
-          this.connectWebSocket()
         }
       } catch (error) {
         console.error('Login failed', error)
@@ -50,22 +46,10 @@ export const useAuthStore = defineStore('auth', {
           saveTokenToSession(this.token)
           // Đánh dấu là đã xác thực và kết nối WebSocket
           this.isAuthenticated = true
-          this.connectWebSocket()
         }
       } catch (error) {
         console.error('Login failed', error)
       }
-    },
-    // Hàm để kết nối WebSocket
-    connectWebSocket() {
-      const { connectWebSocket } = useWebSocket()
-      connectWebSocket()
-    },
-
-    // Hàm để ngắt kết nối WebSocket
-    disconnectWebSocket() {
-      const { disconnectWebSocket } = useWebSocket()
-      disconnectWebSocket()
     },
   },
 })

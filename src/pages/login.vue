@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Import các thành phần cần thiết
-import { useAuthStore } from '@/store/auth'; // Đường dẫn có thể khác tùy theo cấu trúc dự án
+import { useAuthStore } from '@/stores/auth'; // Đường dẫn có thể khác tùy theo cấu trúc dự án
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useTheme } from 'vuetify';
@@ -48,7 +48,7 @@ const handleLogin = async () => {
       return; // Ngừng nếu form không hợp lệ
     }
     await authStore.login(form.value.username, form.value.password, form.value.remember)
-
+    console.log("ddanwg nhap thanfh cong")
     // Điều hướng đến trang dashboard sau khi đăng nhập thành công
     router.push('/notification');
   } catch (error) {
@@ -118,12 +118,12 @@ const validateForm = () => {
 
       <!-- Form đăng nhập -->
       <VCardText>
-        <VForm>
+        <VForm @submit.prevent="handleLogin">
           <VRow>
             <!-- Trường nhập tài khoản -->
             <VCol cols="12">
               <VTextField v-model="form.username" label="Tài khoản" type="text" :error="!!usernameError"
-                :error-messages="usernameError" />
+                :error-messages="usernameError" autocomplete="username" required />
             </VCol>
 
             <!-- Trường nhập mật khẩu -->
@@ -132,24 +132,23 @@ const validateForm = () => {
                 :type="isPasswordVisible ? 'text' : 'password'"
                 :append-inner-icon="isPasswordVisible ? 'ri-eye-off-line' : 'ri-eye-line'"
                 @click:append-inner="isPasswordVisible = !isPasswordVisible" :error="!!passwordError"
-                :error-messages="passwordError" />
+                :error-messages="passwordError" autocomplete="current-password" required />
 
               <!-- Checkbox "Ghi nhớ" và link "Quên mật khẩu" -->
               <div class="d-flex align-center justify-space-between flex-wrap my-6">
                 <VCheckbox v-model="form.remember" label="Ghi nhớ" />
-                <a class="text-primary" href="javascript:void(0)">
-                  Quên mật khẩu?
-                </a>
+                <a class="text-primary" href="javascript:void(0)">Quên mật khẩu?</a>
               </div>
 
               <!-- Nút đăng nhập -->
-              <VBtn type="button" @click="handleLogin">
+              <VBtn type="submit">
                 Đăng nhập
               </VBtn>
             </VCol>
           </VRow>
         </VForm>
       </VCardText>
+
 
     </VCard>
 

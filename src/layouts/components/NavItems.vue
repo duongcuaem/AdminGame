@@ -42,8 +42,22 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
     }" />
   </VerticalNavGroup>
 
+  <!-- 👉 Quản lý tài khoản -->
+  <VerticalNavSectionTitle :item="{
+    heading: 'Quản lý tài khoản',
+  }" />
 
+  <VerticalNavLink :item="{
+    title: 'Khóa tài khoản',
+    icon: 'ri-user-settings-line',
+    to: '/lock-user',
+  }" />
 
+  <VerticalNavLink :item="{
+    title: 'Thông báo',
+    icon: 'ri-user-settings-line',
+    to: '/notification',
+  }" />
 
   <!-- 👉 Apps & Pages -->
   <VerticalNavSectionTitle :item="{
@@ -61,11 +75,13 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
     icon: 'ri-login-box-line',
     to: '/login',
   }" />
+
   <VerticalNavLink :item="{
     title: 'Register',
     icon: 'ri-user-add-line',
     to: '/register',
   }" />
+
   <VerticalNavLink :item="{
     title: 'Error',
     icon: 'ri-information-line',

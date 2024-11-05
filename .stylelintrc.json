@@ -41,6 +41,36 @@
         ]
       }
     ],
-    "media-feature-range-notation": null
+    "media-feature-range-notation": null,
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": [
+          "tailwind",
+          "apply",
+          "variants",
+          "responsive",
+          "screen",
+          "use",
+          "forward",
+          "import"
+        ]
+      }
+    ],
+    "scss/at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": [
+          "tailwind",
+          "apply",
+          "variants",
+          "responsive",
+          "screen",
+          "use",
+          "forward",
+          "import"
+        ]
+      }
+    ]
   }
 }

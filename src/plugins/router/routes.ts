@@ -35,6 +35,13 @@ export const routes = [
         component: () => import('@/pages/form-layouts.vue'),
         meta: { requiresAuth: false }, // Form Layouts yêu cầu đăng nhập
       },
+
+      //llvllr: 05/11/2024 : bằng true thì bắt buộc đăng nhập mới truy cập và ngược lại
+      {
+        path: 'notification',
+        component: () => import('@/pages/notification.vue'),
+        meta: { requiresAuth: true },
+      },
     ],
   },
 
