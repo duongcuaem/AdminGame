@@ -22,7 +22,7 @@ export function useWebSocket() {
     if (stompClient.value || isConnected.value) return
 
     // Địa chỉ WebSocket endpoint
-    const socketUrl = `${API_BASE_URL}`
+    const socketUrl = `${API_BASE_URL}?token=${token}`
     stompClient.value = Stomp.over(new WebSocket(socketUrl))
 
     stompClient.value.connect(
@@ -37,6 +37,10 @@ export function useWebSocket() {
         })
 
         subscribeToChannel('/topic/messages', message => {
+          console.log('Received message:', message.body)
+        })
+
+        subscribeToChannel('/topic/duongdx', message => {
           console.log('Received message:', message.body)
         })
 

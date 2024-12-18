@@ -1,4 +1,4 @@
-// models/NotificationModel.ts
+// models/notificationModel.ts
 
 export interface Notification {
   id: string

@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
+import Pages from 'vite-plugin-pages'
 import vuetify from 'vite-plugin-vuetify'
 import svgLoader from 'vite-svg-loader'
 
@@ -11,6 +12,10 @@ import svgLoader from 'vite-svg-loader'
 export default defineConfig({
   plugins: [
     vue(),
+    Pages({
+      dirs: 'src/pages', // Thư mục chứa các trang
+      extensions: ['vue'], // Quét file có đuôi .vue
+    }),
     vueJsx(),
 
     // Docs: https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin

@@ -68,4 +68,17 @@ export const routes = [
       },
     ],
   },
+  //llvllrdao 18/12/2024 quản lý user
+  {
+    path: '/userManager',
+    component: () => import('@/layouts/default.vue'),
+    meta: { requiresAuth: true }, // Layout mặc định yêu cầu xác thực
+    children: [
+      {
+        path: 'userlock',
+        component: () => import('@/pages/userManager/userlock.vue'),
+        meta: { requiresAuth: false }, // Account Settings yêu cầu đăng nhập
+      },
+    ],
+  },
 ]

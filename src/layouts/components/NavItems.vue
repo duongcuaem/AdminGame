@@ -20,13 +20,41 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
 
   <!-- 👉 User Manager -->
   <VerticalNavGroup :item="{
-    title: 'Khách hàng',
+    title: 'Quản lý tài khoản',
     badgeClass: 'bg-error',
     icon: 'ri-user-settings-line',
   }">
     <VerticalNavLink :item="{
-      title: 'Analytics',
-      to: '/dashboard',
+      title: 'Khóa tài khoản',
+      to: '/userManager/userlock',
+    }" />
+    <VerticalNavLink :item="{
+      title: 'Tài khoản thường',
+      to: '/userManager/user',
+    }" />
+    <VerticalNavLink :item="{
+      title: 'Tài khoản đại lý',
+      to: '/userManager/userdaily',
+    }" />
+    <VerticalNavLink :item="{
+      title: 'Tài khoản bot',
+      to: '/userManager/userbot',
+    }" />
+    <VerticalNavLink :item="{
+      title: 'Quản lý vippoint',
+      to: '/userManager/uservippoint',
+    }" />
+    <VerticalNavLink :item="{
+      title: 'Danh sách user online',
+      to: '/userManager/uservippoint',
+    }" />
+    <VerticalNavLink :item="{
+      title: 'Lịch sử tài khoản đăng nhập',
+      to: '/userManager/userlogin',
+    }" />
+    <VerticalNavLink :item="{
+      title: 'Log mở khóa tài khoản',
+      to: '/userManager/actionadmin',
     }" />
   </VerticalNavGroup>
 
