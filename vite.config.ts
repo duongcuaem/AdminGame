@@ -12,6 +12,25 @@ import svgLoader from 'vite-svg-loader'
 export default defineConfig({
   plugins: [
     vue(),
+    AutoImport({
+      // Tự động import từ các thư mục cụ thể
+      dirs: ['src/stores/**', 'src/utils/**', 'src/services/**'],
+
+      // Tự động import các thư viện bên ngoài
+      imports: [
+        'vue', // Import các hàm như ref, reactive, computed...
+        'vue-router', // Import hàm từ vue-router
+        {
+          uuid: [['v4', 'uuidv4']], // Import v4 từ uuid với tên uuidv4
+        },
+      ],
+
+      // Tạo file d.ts để gợi ý TypeScript
+      dts: 'src/auto-imports.d.ts',
+
+      // Gắn auto import vào global scope nếu cần
+      vueTemplate: true, // Tự động import trong template của Vue
+    }),
     Pages({
       dirs: 'src/pages', // Thư mục chứa các trang
       extensions: ['vue'], // Quét file có đuôi .vue
@@ -52,6 +71,7 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       '@views': fileURLToPath(new URL('./src/views', import.meta.url)),
       '@core': fileURLToPath(new URL('./src/@core', import.meta.url)),
+      '@objects': fileURLToPath(new URL('./src/@objects', import.meta.url)),
       '@layouts': fileURLToPath(new URL('./src/@layouts', import.meta.url)),
       '@images': fileURLToPath(new URL('./src/assets/images/', import.meta.url)),
       '@styles': fileURLToPath(new URL('./src/assets/styles/', import.meta.url)),

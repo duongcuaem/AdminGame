@@ -1,89 +1,66 @@
-<!-- src/views/UserInfoView.vue -->
 <script setup lang="ts">
-import Vpagination from '@/components/ui/Vpagination.vue';
-import { useUserInfoStore } from '@/stores/userInfoStore';
+import Pagination from '@/components/Pagination/Pagination.vue';
+import { useUserLockStore } from '@/stores/userManager/userlock.store'; // Import Pinia store
 import userLockTable from '@/views/pages/user-manager/userLockTable.vue';
+import { computed, onMounted, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router'; // Import Router hooks
 
-// Store userInfo
-const userInfoStore = useUserInfoStore()
+// Sử dụng Router hooks
+const route = useRoute();
+const router = useRouter();
 
-const handlePageChange = (page: number) => {
-  userInfoStore.page.value = page;
-  userInfoStore.fetchUserInfoList();
-};
+// Sử dụng store
+const userLockStore = useUserLockStore();
 
-// Tải dữ liệu khi component được mounted
-onMounted(() => {
-  userInfoStore.fetchUserInfoList()
-})
+// Load data dựa trên route query
+async function loadData() {
+  await userLockStore.fetchPagingByCondition(); // Gọi API để lấy dữ liệu từ backend
+}
 
-// // Tính tổng số trang dựa trên tổng số kết quả và kích thước trang
-// const totalPages = computed(() => Math.ceil(total.value / size.value));
+// Theo dõi sự thay đổi của route.query và tự động tải lại dữ liệu
+watch(
+  () => route.query,
+  async (newQuery) => {
+    userLockStore.setStateFromRoute(newQuery); // Cập nhật state trong store dựa trên route
+    await loadData(); // Tải lại dữ liệu
+  },
+  { immediate: true } // Lần đầu tiên chạy ngay
+);
 
-// // Theo dõi thay đổi trên các bộ lọc, trang, sắp xếp để tải lại danh sách khi có thay đổi
-// watch([filters, page, sortBy, sortOrder], fetchUserInfoList);
+// Dữ liệu phân trang và danh sách user lock
+const userLocks = computed(() => userLockStore.currentUserLocks);
+const currentPaging = computed(() => userLockStore.currentPaging);
 
-// // Hàm thay đổi trang khi người dùng nhấn vào nút phân trang
-// const changePage = (newPage: number) => {
-//   if (newPage > 0 && newPage <= totalPages.value) {
-//     page.value = newPage;
-//   }
-// };
-
-// // Hàm đặt cột sắp xếp và thay đổi thứ tự sắp xếp (tăng hoặc giảm dần)
-// const setSort = (column: string) => {
-//   if (sortBy.value === column) {
-//     sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
-//   } else {
-//     sortBy.value = column;
-//     sortOrder.value = 'asc';
-//   }
-// };
-
-// Dữ liệu động được định nghĩa trong component cha
-const desserts = [
-  { dessert: 'Frozen Yogurt', calories: 159, fat: 6, carbs: 24, protein: 4 },
-  { dessert: 'Ice cream sandwich', calories: 237, fat: 9, carbs: 37, protein: 4.3 },
-  { dessert: 'Eclair', calories: 262, fat: 16, carbs: 24, protein: 6 },
-  { dessert: 'Cupcake', calories: 305, fat: 3.7, carbs: 67, protein: 4.3 },
-  { dessert: 'Gingerbread', calories: 356, fat: 16, carbs: 49, protein: 4.9 },
-  { dessert: 'Frozen Yogurt', calories: 159, fat: 6, carbs: 24, protein: 4 },
-  { dessert: 'Ice cream sandwich', calories: 237, fat: 9, carbs: 37, protein: 4.3 },
-  { dessert: 'Eclair', calories: 262, fat: 16, carbs: 24, protein: 6 },
-  { dessert: 'Cupcake', calories: 305, fat: 3.7, carbs: 67, protein: 4.3 },
-  { dessert: 'Gingerbread', calories: 356, fat: 16, carbs: 49, protein: 4.9 },
-  { dessert: 'Frozen Yogurt', calories: 159, fat: 6, carbs: 24, protein: 4 },
-  { dessert: 'Ice cream sandwich', calories: 237, fat: 9, carbs: 37, protein: 4.3 },
-  { dessert: 'Eclair', calories: 262, fat: 16, carbs: 24, protein: 6 },
-  { dessert: 'Cupcake', calories: 305, fat: 3.7, carbs: 67, protein: 4.3 },
-  { dessert: 'Gingerbread', calories: 356, fat: 16, carbs: 49, protein: 4.9 },
-  { dessert: 'Frozen Yogurt', calories: 159, fat: 6, carbs: 24, protein: 4 },
-  { dessert: 'Ice cream sandwich', calories: 237, fat: 9, carbs: 37, protein: 4.3 },
-  { dessert: 'Eclair', calories: 262, fat: 16, carbs: 24, protein: 6 },
-  { dessert: 'Cupcake', calories: 305, fat: 3.7, carbs: 67, protein: 4.3 },
-  { dessert: 'Gingerbread', calories: 356, fat: 16, carbs: 49, protein: 4.9 },
-  { dessert: 'Frozen Yogurt', calories: 159, fat: 6, carbs: 24, protein: 4 },
-  { dessert: 'Ice cream sandwich', calories: 237, fat: 9, carbs: 37, protein: 4.3 },
-  { dessert: 'Eclair', calories: 262, fat: 16, carbs: 24, protein: 6 },
-  { dessert: 'Cupcake', calories: 305, fat: 3.7, carbs: 67, protein: 4.3 },
-  { dessert: 'Gingerbread', calories: 356, fat: 16, carbs: 49, protein: 4.9 },
-];
+onMounted(async () => {
+  const query = route.query;
+  const page = query.page || import.meta.env.VITE_PAGING_PAGE;
+  const limit = query.limit || import.meta.env.VITE_PAGING_LIMIT;
+  const newQuery = { page, limit };
+  if (!query.page || !query.limit) {
+    router.push({
+      path: route.path,
+      query: { ...query, ...newQuery },
+    });
+  }
+});
 
 </script>
-<template>
 
+<template>
   <VRow>
     <VCol cols="12">
-      <VCard title="Fixed Header">
+      <VCard title="User Lock Table">
         <VCardText>
-          You can fix the header of table by using the <code>fixed-header</code> prop.
+          Bảng User Lock. Thay đổi route (page, limit) sẽ tự động tải lại dữ liệu.
         </VCardText>
-        <userLockTable :desserts="desserts" />
+        <!-- Bảng hiển thị dữ liệu -->
+        <userLockTable :data="userLocks" />
       </VCard>
     </VCol>
-  </VRow>
-  <!-- Pagination Component -->
-  <Vpagination :total="userInfoStore.total.value" :currentPage="userInfoStore.page.value"
-    :pageSize="userInfoStore.size.value" @page-change="handlePageChange" />
 
+    <!-- Phân trang -->
+    <VCol cols="12">
+      <Pagination :payload="currentPaging" />
+    </VCol>
+  </VRow>
 </template>
