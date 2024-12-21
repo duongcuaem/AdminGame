@@ -3,9 +3,14 @@ import type { UserInfo } from '@/models/userManager'
 import type { ApiResponse, PaginationInfo, SortitionInfo } from '@/objects'
 import type { UserCondition } from '@/objects/userManager'
 
-const path = '/userManager/lock'
+const path = '/userManager/profile'
 
-export const userLockService = {
+interface UserListResponse {
+  items: UserInfo[] // Danh sách các user
+  total: number // Tổng số user
+}
+
+export const userProfileService = {
   create,
   update,
   remove,
@@ -64,4 +69,4 @@ async function getPagingByCondition(
   return response.data
 }
 
-export default userLockService
+export default userProfileService

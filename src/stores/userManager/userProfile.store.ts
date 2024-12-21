@@ -1,14 +1,14 @@
 import type { UserInfo } from '@/models/userManager'
 import { PaginationInfo, SortitionInfo } from '@/objects'
 import { UserCondition } from '@/objects/userManager'
-import { userLockService } from '@/services/UserManager/user-lock.service'
+import { userProfileService } from '@/services/UserManager/user-profile.service'
 import { defineStore } from 'pinia'
 import type { LocationQuery } from 'vue-router'
 
-export const useUserLockStore = defineStore('userManager-userlock', () => {
+export const useUserProfileStore = defineStore('userManager-userprofile', () => {
   /* STATES */
-  const currentUserLocks = ref<UserInfo[]>([]) // Danh sách user lock
-  const currentUserLock = ref<UserInfo | null>(null) // User lock hiện tại
+  const currentUserProfiles = ref<UserInfo[]>([]) // Danh sách user profile
+  const currentUserProfile = ref<UserInfo | null>(null) // User profile hiện tại
   const currentPaging = ref(new PaginationInfo({})) // Thông tin phân trang
   const currentSorting = ref(new SortitionInfo({})) // Thông tin sắp xếp
   const currentCondition = ref(new UserCondition({})) // Điều kiện tìm kiếm
@@ -34,105 +34,105 @@ export const useUserLockStore = defineStore('userManager-userlock', () => {
     if (query.sorts) currentSorting.value.set({ sorts: String(query.sorts) })
   }
 
-  // Tạo mới user lock
-  async function create(userlock: UserInfo) {
+  // Tạo mới user profile
+  async function create(userprofile: UserInfo) {
     try {
-      const item = await userLockService.create<UserInfo>(userlock)
-      if (item) currentUserLock.value = item
-      return currentUserLock.value
+      const item = await userProfileService.create<UserInfo>(userprofile)
+      if (item) currentUserProfile.value = item
+      return currentUserProfile.value
     } catch (err) {
-      console.error('Lỗi khi tạo user lock:', err)
+      console.error('Lỗi khi tạo user profile:', err)
       throw err
     }
   }
 
-  // Cập nhật user lock
-  async function update(userlock: UserInfo) {
+  // Cập nhật user profile
+  async function update(userprofile: UserInfo) {
     try {
-      const item = await userLockService.update<UserInfo>(userlock)
-      if (item) currentUserLock.value = item
-      return currentUserLock.value
+      const item = await userProfileService.update<UserInfo>(userprofile)
+      if (item) currentUserProfile.value = item
+      return currentUserProfile.value
     } catch (err) {
-      console.error('Lỗi khi cập nhật user lock:', err)
+      console.error('Lỗi khi cập nhật user profile:', err)
       throw err
     }
   }
 
-  // Xóa user lock
+  // Xóa user profile
   async function remove(userId: number) {
     try {
-      await userLockService.remove<void>(userId)
-      currentUserLocks.value = currentUserLocks.value.filter(user => user.uid !== userId)
+      await userProfileService.remove<void>(userId)
+      currentUserProfiles.value = currentUserProfiles.value.filter(user => user.uid !== userId)
     } catch (err) {
-      console.error('Lỗi khi xóa user lock:', err)
+      console.error('Lỗi khi xóa user profile:', err)
       throw err
     }
   }
 
-  // Lấy tất cả user lock
+  // Lấy tất cả user profile
   async function fetchAll() {
     try {
-      const items = await userLockService.getAll<UserInfo[]>()
-      currentUserLocks.value = items
-      return currentUserLocks.value
+      const items = await userProfileService.getAll<UserInfo[]>()
+      currentUserProfiles.value = items
+      return currentUserProfiles.value
     } catch (err) {
-      console.error('Lỗi khi lấy danh sách user lock:', err)
+      console.error('Lỗi khi lấy danh sách user profile:', err)
       throw err
     }
   }
 
-  // Lấy user lock theo ID
+  // Lấy user profile theo ID
   async function fetchById(id: number) {
     try {
-      const item = await userLockService.getById<UserInfo>(id)
-      if (item) currentUserLock.value = item
-      return currentUserLock.value
+      const item = await userProfileService.getById<UserInfo>(id)
+      if (item) currentUserProfile.value = item
+      return currentUserProfile.value
     } catch (err) {
-      console.error('Lỗi khi lấy user lock theo ID:', err)
+      console.error('Lỗi khi lấy user profile theo ID:', err)
       throw err
     }
   }
 
   async function fetchByCondition() {
     try {
-      const data = await userLockService.getByCondition(currentCondition.value)
+      const data = await userProfileService.getByCondition(currentCondition.value)
 
       if (data.items) {
-        currentUserLocks.value = data.items // Gán danh sách user vào state
+        currentUserProfiles.value = data.items // Gán danh sách user vào state
       }
       if (data.total !== undefined) {
         currentPaging.value.set({ total: data.total }) // Gán tổng số user vào state
       }
 
-      return currentUserLocks.value
+      return currentUserProfiles.value
     } catch (err) {
-      console.error('Lỗi khi tìm kiếm user lock:', err)
+      console.error('Lỗi khi tìm kiếm user profile:', err)
       throw err
     }
   }
 
-  // Tìm kiếm user lock có phân trang
+  // Tìm kiếm user profile có phân trang
   async function fetchPagingByCondition() {
     try {
-      const { items = [], total = 0 } = await userLockService.getPagingByCondition(
+      const { items = [], total = 0 } = await userProfileService.getPagingByCondition(
         currentPaging.value,
         currentCondition.value,
         currentSorting.value,
       )
 
-      currentUserLocks.value = items // Gán danh sách user vào state
+      currentUserProfiles.value = items // Gán danh sách user vào state
       currentPaging.value.set({ total }) // Gán tổng số user vào state
 
-      return currentUserLocks.value
+      return currentUserProfiles.value
     } catch (err) {
-      console.error('Lỗi khi tìm kiếm user lock có phân trang:', err)
+      console.error('Lỗi khi tìm kiếm user profile có phân trang:', err)
       throw err
     }
   }
 
   return {
-    currentUserLock,
-    currentUserLocks,
+    currentUserProfile,
+    currentUserProfiles,
     currentPaging,
     currentCondition,
     currentSorting,
@@ -149,5 +149,5 @@ export const useUserLockStore = defineStore('userManager-userlock', () => {
 
 // Hỗ trợ hot module replacement (HMR)
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useUserLockStore, import.meta.hot))
+  import.meta.hot.accept(acceptHMRUpdate(useUserProfileStore, import.meta.hot))
 }

@@ -8,7 +8,7 @@ export const routes = [
       {
         path: 'account-settings',
         component: () => import('@/pages/account-settings.vue'),
-        meta: { requiresAuth: false }, // Account Settings yêu cầu đăng nhập
+        meta: { requiresAuth: true }, // Account Settings yêu cầu đăng nhập
       },
       {
         path: 'typography',
@@ -80,5 +80,11 @@ export const routes = [
         meta: { requiresAuth: false }, // Account Settings yêu cầu đăng nhập
       },
     ],
+  },
+  // yêu cầu đăng nhập
+  {
+    path: '',
+    component: () => import('@/layouts/default.vue'),
+    meta: { requiresAuth: true },
   },
 ]

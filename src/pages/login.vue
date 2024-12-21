@@ -36,27 +36,13 @@ const authThemeMask = computed(() => {
 // Biến để lưu trạng thái hiển thị mật khẩu
 const isPasswordVisible = ref(false)
 
-// Biến trạng thái lỗi cho tài khoản và mật khẩu
+// Trạng thái lỗi
+const isLoading = ref(false);
 const usernameError = ref('');
 const passwordError = ref('');
+const generalError = ref('');
 
-
-// Hàm xử lý đăng nhập
-const handleLogin = async () => {
-  try {
-    if (!validateForm()) {
-      return; // Ngừng nếu form không hợp lệ
-    }
-    await authStore.login(form.value.username, form.value.password, form.value.remember)
-    console.log("ddanwg nhap thanfh cong")
-    // Điều hướng đến trang dashboard sau khi đăng nhập thành công
-    router.push('/notification');
-  } catch (error) {
-    console.error('Đăng nhập thất bại:', error);
-    alert('Đăng nhập thất bại. Vui lòng kiểm tra thông tin đăng nhập.');
-  }
-};
-
+//validate form
 const validateForm = () => {
   let isValid = true;
 
@@ -84,6 +70,32 @@ const validateForm = () => {
 
   return isValid;
 };
+
+// Hàm xử lý đăng nhập
+const handleLogin = async () => {
+  if (!validateForm()) return;
+
+  try {
+    isLoading.value = true;
+    await authStore.login(form.value.username, form.value.password, form.value.remember)
+    router.push('/account-settings');
+  } catch (error) {
+    console.error('Đăng nhập thất bại:', error);
+    alert('Đăng nhập thất bại. Vui lòng kiểm tra thông tin đăng nhập.');
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+// Tự động điều hướng nếu đã đăng nhập
+onMounted(() => {
+  authStore.checkAuthStatus();
+  if (authStore.isAuthenticated) {
+    router.push('/account-settings');
+  }
+});
+
+
 
 </script>
 
@@ -139,6 +151,8 @@ const validateForm = () => {
                 <VCheckbox v-model="form.remember" label="Ghi nhớ" />
                 <a class="text-primary" href="javascript:void(0)">Quên mật khẩu?</a>
               </div>
+
+              <VAlert v-if="generalError" type="error" dismissible>{{ generalError }}</VAlert>
 
               <!-- Nút đăng nhập -->
               <VBtn type="submit">
